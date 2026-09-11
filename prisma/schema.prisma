@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Scholarship {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  university     String
+  country        String
+  subject        String
+  degree         String
+  amount         String
+  applicationUrl String
+  openDate       DateTime
+  deadlineDate   DateTime
+  status         String   @default("open")
+  isTextile      Boolean  @default(false)
+  requirements   String   @default("")
+  benefits       String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  notifications Notification[]
+}
+
+model Notification {
+  id            String      @id @default(cuid())
+  scholarshipId String
+  scholarship   Scholarship @relation(fields: [scholarshipId], references: [id])
+  type          String
+  message       String
+  isRead        Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+}
+
+model UserPreference {
+  id                  String @id @default(cuid())
+  preferredSubjects   String @default("")
+  preferredCountries  String @default("")
+  notificationEnabled Boolean @default(true)
+  emailNotifications  Boolean @default(true)
+}
